@@ -31,8 +31,7 @@ I have two dahsboards at the moment
 ## F1 Pit board
 This dashboard fetches information about the upcoming F1 race using the [F1 Sensor](https://github.com/Nicxe/f1_sensor) integration.
 
-<img src="https://github.com/user-attachments/assets/96185a06-ed0b-421a-afa6-884864baca63" width="500">
-
+<img width="500" alt="F1_pitwall" src="https://github.com/user-attachments/assets/f962283c-a4f7-4903-898f-fd799f439ed6" />
 
 
 
