@@ -2,8 +2,7 @@
 
 <a href="https://buymeacoffee.com/niklasv" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
-<img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2025"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Nicxe/esphome"><br><br>
-<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Nicxe/esphome">
+
 
 
 
@@ -23,7 +22,6 @@ I have two dahsboards at the moment
 
 <br>All icons and information show, this is only when the dashboard is in service mode
 <img src="https://github.com/Nicxe/esphome/assets/27124316/baa2c249-bf0b-49a6-9b31-7161c171f8b9" width="500">
-
 
 
 

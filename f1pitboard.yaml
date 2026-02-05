@@ -72,29 +72,72 @@ time:
     id: homeassistant_time
     on_time:
       - seconds: 0
-        minutes: /1
+        hours: /1
         then:
           - if:
               condition:
-                lambda: 'return id(data_updated) == true;'
+                lambda: 'return id(data_updated);'
               then:
-                - if:
-                    condition:
-                      binary_sensor.is_on: motion_detected
-                    then:
-                      - logger.log: "Sensor data updated and activity in home detected: Refreshing display..."
-                      - script.execute: update_screen_f1pitboard
-                    else:
-                      - logger.log: "Sensor data updated but no activity in home - skipping display refresh."
+                - logger.log: "Sensordata uppdaterad: Refreshing display..."
+                - lambda: 'id(data_updated) = false;'
+                - script.execute: update_screen_f1pitboard
               else:
-                - logger.log: "No sensors updated - skipping display refresh."
+                - logger.log: "Ingen ny data, hoppar över uppdatering."
+
+      - hours: 6
+        minutes: 0
+        seconds: 0
+        then:
+          - logger.log: "Schemalagd uppdatering kl 06:00"
+          - script.execute: update_screen_f1pitboard
+
+      - hours: 9
+        minutes: 0
+        seconds: 0
+        days_of_week: [5, 6, 7] 
+        then:
+          - logger.log: "Schemalagd uppdatering fre-sön)"
+          - script.execute: update_screen_f1pitboard
+
+      - hours: 12
+        minutes: 0
+        seconds: 0
+        then:
+          - logger.log: "Schemalagd uppdatering fre-sön)"
+          - script.execute: update_screen_f1pitboard
+
+      - hours: 15
+        minutes: 0
+        seconds: 0
+        days_of_week: [5, 6, 7] 
+        then:
+          - logger.log: "Schemalagd uppdatering fre-sön)"
+          - script.execute: update_screen_f1pitboard
+
+      - hours: 18
+        minutes: 0
+        seconds: 0
+        then:
+          - logger.log: "Schemalagd uppdatering fre-sön)"
+          - script.execute: update_screen_f1pitboard
+
+      - hours: 21
+        minutes: 0
+        seconds: 0
+        days_of_week: [5, 6, 7] 
+        then:
+          - logger.log: "Schemalagd uppdatering fre-sön)"
+          - script.execute: update_screen_f1pitboard
+
+
+
 
 
 # Wifi information
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  use_address: 192.168.20.175
+  use_address: 192.168.1.231
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
@@ -114,6 +157,12 @@ font:
     id: font_title
     size: 108
     glyphs: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '-', ' ', '°', '.', ',', 'ó', 'í', 'ã', 'é']
+  - file: 'fonts/GothamRnd-Bold.ttf'
+    id: font_nr_big
+    size: 220
+    glyphs: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '-', ' ', '°', '.', ',', 'ó', 'í', 'ã', 'é']
+
+
 #  - file: 'fonts/TitilliumWeb-Bold.ttf'
   - file: 'fonts/GothamRnd-Bold.ttf'
     id: font_title_small
@@ -134,30 +183,30 @@ font:
     id: font_title_bold
     size: 54
     glyphs: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '-', ' ', '°', '.', ',', 'ó', 'í', 'ã', 'é']
+#  - file: 'fonts/TitilliumWeb-Bold.ttf'
+  - file: 'fonts/GothamRnd-Bold.ttf'    
+    id: font_title_bold_medium
+    size: 36
+    glyphs: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '-', ' ', '°', '.', ',', 'ó', 'í', 'ã', 'é']
 
-  # Include Material Design Icons font
-  # Thanks to https://community.home-assistant.io/t/display-materialdesign-icons-on-esphome-attached-to-screen/199790/16
-  - file: 'fonts/materialdesignicons-webfont.ttf'
-    id: font_mdi_large
-    size: 96
-    glyphs: &mdi-weather-glyphs
-      - "\U000F0F29" # mdi snowflake-alert
+
+
   - file: 'fonts/materialdesignicons-webfont.ttf'
     id: font_mdi_medlarge
-    size: 18
-    glyphs:
-      - "\U000F05A9" # mdi-wifi
-  - file: 'fonts/materialdesignicons-webfont.ttf'
-    id: font_mdi_medium
     size: 36
-    glyphs: *mdi-weather-glyphs
+    glyphs:
+      - "\U000F02A4" # GitHub
+      - "\U000F04D2" # Star
+      - "\U000F04FC" # Tag
 
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: font_mdi_icon
+    size: 24
+    glyphs:
+      - "\U000F02A4" # GitHub
+      - "\U000F04D2" # Star
+      - "\U000F04FC" # Tag
 
-# Check if motion is detected in the living room.
-binary_sensor:
-  - platform: homeassistant
-    entity_id: binary_sensor.f1_pit_board_motion_detected
-    id: motion_detected
 
 
 # Include Images
@@ -185,10 +234,9 @@ sensor:
     lambda: 'return id(recorded_display_refresh);'
   
 
-## WiFi signl from ESP32 service
-  - platform: wifi_signal
-    name: "WiFi Signal Sensor"
-    update_interval: 60s 
+
+
+
 
 
 # Call information from HA
@@ -201,6 +249,40 @@ text_sensor:
     on_value:
       then:
         - lambda: 'id(data_updated) = true;'
+
+
+  - platform: homeassistant
+    entity_id: sensor.dagar_till_f1_2026
+    id: dagar_till_f1_2026
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+
+  - platform: homeassistant
+    entity_id: sensor.github_f1_sensor
+    id: git_hub_stars
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+
+  - platform: homeassistant
+    entity_id: sensor.github_f1_sensor
+    attribute: tag_name
+    id: github_tag
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
+  - platform: homeassistant
+    entity_id: sensor.github_f1_sensor
+    attribute: download_count
+    id: github_downloads
+    on_value:
+      then:
+        - lambda: 'id(data_updated) = true;'
+
 
   - platform: homeassistant
     entity_id: sensor.f1_data_race
@@ -308,7 +390,6 @@ text_sensor:
         - lambda: 'id(data_updated) = true;'
 
 
-
 # Pins for Waveshare ePaper ESP Board
 spi:
   clk_pin: GPIO13
@@ -331,66 +412,53 @@ display:
     rotation: 90°
     lambda: |-
 
-      //# Print loading screen before data is received.
+      
       if (id(initial_data_received) == false) {
+        // 1. Visa "loading screen"
         it.printf(240, 350, id(font_small_bold), TextAlign::TOP_CENTER, "LIGHTS OUT AND AWAY WE GO");
         it.image(150, 200, id(image_f1));
+
       } else {
 
-
+        // 2. Visa raceinformation (alltid när data finns)
         it.image(60, 140, id(image_f1));
-        
+
         it.printf(320, 100, id(font_title), TextAlign::TOP_CENTER, "%s", id(next_race_day_days_countdown).state.c_str());
         it.printf(260, 200, id(font_medium_bold), TextAlign::TOP_LEFT, "dagar till");
 
         it.printf(50, 250, id(font_title_small), TextAlign::TOP_LEFT, "%s", id(next_race_GP).state.c_str());
-
         it.printf(50, 290, id(font_medium_bold), TextAlign::TOP_LEFT, "%s", id(next_race_day_and_time).state.c_str());
-        
         it.printf(50, 330, id(font_small_bold), TextAlign::TOP_LEFT, "%s", id(next_race_circuit).state.c_str());
         it.printf(50, 355, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(next_race_location).state.c_str());
 
-        if (atoi(id(next_race_day_days_countdown).state.c_str()) < 4) {
-
-          // Kval och FP1 visas alltid när racet är nära
+        int countdown = atoi(id(next_race_day_days_countdown).state.c_str());
+        if (countdown >= 1 && countdown <= 4) {
           it.printf(50, 400, id(font_small_bold), TextAlign::TOP_LEFT, "%s", id(next_race_quali_and_time).state.c_str());
           it.printf(50, 430, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(next_race_fp1_and_time).state.c_str());
 
-          // Om det INTE är sprinthelg (båda sprint-fälten är tomma)
           if (
             id(next_race_sprint_quali_and_time).state == "" &&
             id(next_race_sprint_and_time).state == ""
           ) {
             it.printf(50, 460, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(next_race_fp2_and_time).state.c_str());
             it.printf(50, 490, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(next_race_fp3_and_time).state.c_str());
-          }
-
-          // Om det ÄR sprinthelg (båda sprint-fälten har innehåll)
-          else if (
+          } else if (
             id(next_race_sprint_quali_and_time).state != "" &&
             id(next_race_sprint_and_time).state != ""
           ) {
             it.printf(50, 460, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(next_race_sprint_quali_and_time).state.c_str());
             it.printf(50, 490, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(next_race_sprint_and_time).state.c_str());
           }
-
         }
 
+        it.rectangle(20, 535, 410, 1);
 
-        it.rectangle(20, 535, 410, 1);                 
-        
-      
         it.printf(50, 560, id(font_small_bold), TextAlign::TOP_LEFT, "Kommande race:");
         it.printf(50, 585, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(race_schedule_plus1).state.c_str());
         it.printf(50, 610, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(race_schedule_plus2).state.c_str());
         it.printf(50, 635, id(font_small_book), TextAlign::TOP_LEFT, "%s", id(race_schedule_plus3).state.c_str());
 
-
-
- 
-      //# Print update timestamp
-        // Refresh Timestamp
-        // Code by EnsconcE from https://community.home-assistant.io/t/esphome-show-time/348903
+        // Refresh timestamp längst ner
         char str[17];
         time_t currTime = id(homeassistant_time).now().timestamp;
         strftime(str, sizeof(str), "%d %b %H:%M", localtime(&currTime));
