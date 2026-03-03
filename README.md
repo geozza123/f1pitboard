@@ -13,7 +13,7 @@ This is my first attempt at anything with
 This dashboard fetches information about the upcoming F1 race using the [F1 Sensor](https://github.com/Nicxe/f1_sensor) integration.
 
 <img width="500" alt="F1_pitwall" src="https://github.com/geozza123/f1pitboard/blob/bcad790f278f21b4681e462f9bb24bdfc4e14149/sample_images/f1pitboard_countdown.jpg" />
-<img width="500" alt="F1_pitwall" src="https://github.com/geozza123/f1pitboard/blob/bcad790f278f21b4681e462f9bb24bdfc4e14149/sample_images/f1pitboard_race_control.jpg" />
+<img width="500" alt="F1_pitwall" src="https://github.com/geozza123/f1pitboard/blob/d419c1770062cf89976c8cec435981d8771c9a8a/sample_images/f1pitboard_race_control.jpg" />
 
 
 
