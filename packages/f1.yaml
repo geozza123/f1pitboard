@@ -1,370 +1,170 @@
 ## Motion sensor
 template:
   - binary_sensor:
-      - name: F1 Pit Board Motion Detected
-        device_class: "occupancy"
-        delay_off: "00:01:00" # Uppdaterat till korrekt format
-        state: >-
-          {%- if states('binary_sensor.lilla_rummet_occupancy') == 'on' %}
-            on
-          {%- else -%}
-            off
-          {%- endif -%}
+    - name: F1 Pit Board Motion Detected
+      device_class: "occupancy"
+      delay_off: "00:01:00" 
+      state: >-
+        {%- if states('binary_sensor.everything_presence_lite_221820_occupancy') == 'on' %}
+          on
+        {%- else -%}
+          off
+        {%- endif -%}
 
-  ## Bundle up all the data to send over to the ESPHome device
-  # This creates one template sensor with a lot for attributes.
+## Bundle up all the data to send over to the ESPHome device
+# This creates one template sensor with a lot for attributes.
 
-  - trigger:
-      platform: time_pattern
-      minutes: "/1"
-    sensor:
-      - name: F1 data race
-        state: F1
-        attributes:
-          ## Next race
-          next_race_round: >
-            {{ state_attr('sensor.f1_next_race', 'round') }}
+- trigger:
+    platform: time_pattern
+    minutes: "/1"
+  sensor:
+    - name: F1 data race
+      state: F1
+      attributes:
+        ## Next race
+        next_race_round: >
+          {{ state_attr('sensor.f1_next_race', 'round') }}
 
-          next_race_GP: >
-            {{ state_attr('sensor.f1_next_race', 'race_name')
-              | replace('Bahrain', 'Bahrain')
-              | replace('Saudi Arabian', 'Saudiarabien')
-              | replace('Australian', 'Australien')
-              | replace('Azerbaijan', 'Azerbaijan')
-              | replace('Miami', 'Miami')
-              | replace('Monaco', 'Monaco')
-              | replace('Spanish', 'Spanien')
-              | replace('Canadian', 'Kanada')
-              | replace('Austrian', 'Österrike')
-              | replace('British', 'Storbritannien')
-              | replace('Hungarian', 'Ungern')
-              | replace('Belgian', 'Belgien')
-              | replace('Dutch', 'Nederländerna')
-              | replace('Italian', 'Italien')
-              | replace('Singapore', 'Singapore')
-              | replace('Japanese', 'Japan')
-              | replace('Qatar', 'Qatar')
-              | replace('United States', 'USA')
-              | replace('Mexico City', 'Mexiko')
-              | replace('São Paulo', 'Brasilien')
-              | replace('Las Vegas', 'Las Vega')
-              | replace('Abu Dhabi', 'Abu Dhabi')
-              | replace('Grand Prix', 'GP')
+        next_race_GP: >
+          {{ state_attr('sensor.f1_next_race', 'race_name')
+            | replace('Grand Prix', 'GP')
+          }}
+
+        next_race_day_and_time: >
+          {{ as_timestamp(state_attr('sensor.f1_next_race', 'race_start'))
+            | timestamp_custom("%A %d %B at %H:%M")
+          }}
+
+        next_race_day_days_countdown: >
+          {{ (as_datetime(state_attr('sensor.f1_next_race', 'race_start')).date() - now().date()).days }}
+
+        next_race_fp1_and_time: >
+          {% set fp1 = state_attr('sensor.f1_next_race', 'first_practice_start') %}
+          {% if fp1 %}
+            {% set fp1_dt = as_local(as_datetime(fp1)) %}
+            FP1 {{ fp1_dt.strftime('%A at %H:%M')
             }}
+          {% endif %}
 
-          next_race_day_and_time: >
-            {{ as_timestamp(state_attr('sensor.f1_next_race', 'race_start'))
-              | timestamp_custom("%A %d %B kl %H:%M")
-              | replace('Monday', 'Måndag')
-              | replace('Tuesday', 'Tisdag')
-              | replace('Wednesday', 'Onsdag')
-              | replace('Thursday', 'Torsdag')
-              | replace('Friday', 'Fredag')
-              | replace('Saturday', 'Lördag')
-              | replace('Sunday', 'Söndag')
-              | replace('January', 'jan')
-              | replace('February', 'feb')
-              | replace('March', 'mar')
-              | replace('April', 'apr')
-              | replace('May', 'maj')
-              | replace('June', 'jun')
-              | replace('July', 'jul')
-              | replace('August', 'aug')
-              | replace('September', 'sep')
-              | replace('October', 'okt')
-              | replace('November', 'nov')
-              | replace('December', 'dec')
+        next_race_fp2_and_time: >
+          {% set fp2 = state_attr('sensor.f1_next_race', 'second_practice_start') %}
+          {% if fp2 %}
+            {% set fp2_dt = as_local(as_datetime(fp2)) %}
+            FP2 {{ fp2_dt.strftime('%A at %H:%M')
             }}
+          {% endif %}
 
-          next_race_day_days_countdown: >
-            {{ (as_datetime(state_attr('sensor.f1_next_race', 'race_start')).date() - now().date()).days }}
-
-          next_race_fp1_and_time: >
-            {% set fp1 = state_attr('sensor.f1_next_race', 'first_practice_start') %}
-            {% if fp1 %}
-              {% set fp1_dt = as_local(as_datetime(fp1)) %}
-              Träning 1 {{ fp1_dt.strftime('%A kl %H:%M')
-                | replace('Monday', 'måndag')
-                | replace('Tuesday', 'tisdag')
-                | replace('Wednesday', 'onsdag')
-                | replace('Thursday', 'torsdag')
-                | replace('Friday', 'fredag')
-                | replace('Saturday', 'lördag')
-                | replace('Sunday', 'söndag')
-              }}
-            {% endif %}
-
-          next_race_fp2_and_time: >
-            {% set fp2 = state_attr('sensor.f1_next_race', 'second_practice_start') %}
-            {% if fp2 %}
-              {% set fp2_dt = as_local(as_datetime(fp2)) %}
-              Träning 2 {{ fp2_dt.strftime('%A kl %H:%M')
-                | replace('Monday', 'måndag')
-                | replace('Tuesday', 'tisdag')
-                | replace('Wednesday', 'onsdag')
-                | replace('Thursday', 'torsdag')
-                | replace('Friday', 'fredag')
-                | replace('Saturday', 'lördag')
-                | replace('Sunday', 'söndag')
-              }}
-            {% endif %}
-
-          next_race_fp3_and_time: >
-            {% set fp3 = state_attr('sensor.f1_next_race', 'third_practice_start') %}
-            {% if fp3 %}
-              {% set fp3_dt = as_local(as_datetime(fp3)) %}
-              Träning 3 {{ fp3_dt.strftime('%A kl %H:%M')
-                | replace('Monday', 'måndag')
-                | replace('Tuesday', 'tisdag')
-                | replace('Wednesday', 'onsdag')
-                | replace('Thursday', 'torsdag')
-                | replace('Friday', 'fredag')
-                | replace('Saturday', 'lördag')
-                | replace('Sunday', 'söndag')
-              }}
-            {% endif %}
-
-          next_race_sprint_quali_and_time: >
-            {% set sq = state_attr('sensor.f1_next_race', 'sprint_qualifying_start') %}
-            {% if sq %}
-              {% set sq_dt = as_local(as_datetime(sq)) %}
-              Sprint kval {{ sq_dt.strftime('%A kl %H:%M')
-                | replace('Monday', 'måndag')
-                | replace('Tuesday', 'tisdag')
-                | replace('Wednesday', 'onsdag')
-                | replace('Thursday', 'torsdag')
-                | replace('Friday', 'fredag')
-                | replace('Saturday', 'lördag')
-                | replace('Sunday', 'söndag')
-              }}
-            {% endif %}
-
-          next_race_sprint_and_time: >
-            {% set sprint = state_attr('sensor.f1_next_race', 'sprint_start') %}
-            {% if sprint %}
-              {% set sprint_dt = as_local(as_datetime(sprint)) %}
-              Sprint race {{ sprint_dt.strftime('%A kl %H:%M')
-                | replace('Monday', 'måndag')
-                | replace('Tuesday', 'tisdag')
-                | replace('Wednesday', 'onsdag')
-                | replace('Thursday', 'torsdag')
-                | replace('Friday', 'fredag')
-                | replace('Saturday', 'lördag')
-                | replace('Sunday', 'söndag')
-              }}
-            {% endif %}
-
-          next_race_quali_and_time: >
-            {% set quali = state_attr('sensor.f1_next_race', 'qualifying_start') %}
-            {% if quali %}
-              {% set quali_dt = as_local(as_datetime(quali)) %}
-              Kval {{ quali_dt.strftime('%A kl %H:%M')
-                | replace('Monday', 'måndag')
-                | replace('Tuesday', 'tisdag')
-                | replace('Wednesday', 'onsdag')
-                | replace('Thursday', 'torsdag')
-                | replace('Friday', 'fredag')
-                | replace('Saturday', 'lördag')
-                | replace('Sunday', 'söndag')
-              }}
-            {% endif %}
-
-          next_race_circuit: >
-            {{ state_attr('sensor.f1_next_race', 'circuit_name') }}
-
-          next_race_location: >
-            {{ state_attr('sensor.f1_next_race', 'circuit_locality') }}, {{
-              state_attr('sensor.f1_next_race', 'circuit_country')
-                | replace('Saudi Arabia', 'Saudiarabien')
-                | replace('Australia', 'Australien')
-                | replace('Azerbaijan', 'Azerbajdzjan')
-                | replace('Spain', 'Spanien')
-                | replace('Canada', 'Kanada')
-                | replace('Austria', 'Österrike')
-                | replace('UK', 'Storbritannien')
-                | replace('Hungary', 'Ungern')
-                | replace('Belgium', 'Belgien')
-                | replace('Netherlands', 'Nederländerna')
-                | replace('Italy', 'Italien')
-                | replace('Mexico', 'Mexiko')
-                | replace('Brazil', 'Brasilien')
-                | replace('United States', 'USA')
-                | replace('UAE', 'Förenade Arabemiraten')
+        next_race_fp3_and_time: >
+          {% set fp3 = state_attr('sensor.f1_next_race', 'third_practice_start') %}
+          {% if fp3 %}
+            {% set fp3_dt = as_local(as_datetime(fp3)) %}
+            FP3 {{ fp3_dt.strftime('%A at %H:%M')
             }}
+          {% endif %}
 
-          race_schedule_plus1: >
-            {% set races = state_attr('sensor.f1_current_season', 'races') %}
-            {% set next_index = namespace(index = none) %}
+        next_race_sprint_quali_and_time: >
+          {% set sq = state_attr('sensor.f1_next_race', 'sprint_qualifying_start') %}
+          {% if sq %}
+            {% set sq_dt = as_local(as_datetime(sq)) %}
+            Sprint Quali {{ sq_dt.strftime('%A at %H:%M')
+            }}
+          {% endif %}
 
-            {# Hitta index för nästa race #}
-            {% for i in range(races | length) %}
-              {% set race_dt = as_datetime(races[i].date ~ 'T' ~ races[i].time) %}
-              {% if race_dt > now() %}
-                {% set next_index.index = i %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
+        next_race_sprint_and_time: >
+          {% set sprint = state_attr('sensor.f1_next_race', 'sprint_start') %}
+          {% if sprint %}
+            {% set sprint_dt = as_local(as_datetime(sprint)) %}
+            Sprint Race {{ sprint_dt.strftime('%A at %H:%M')
+            }}
+          {% endif %}
 
-            {# Visa racet efter nästa, om det finns #}
-            {% if next_index.index is not none and (next_index.index + 1) < (races | length) %}
-              {% set race = races[next_index.index + 1] %}
-              {% set race_dt = as_local(as_datetime(race.date ~ 'T' ~ race.time)) %}
-              {{ race_dt.strftime('%d %B') 
-                  | replace('January', 'januari')
-                  | replace('February', 'februari')
-                  | replace('March', 'mars')
-                  | replace('April', 'april')
-                  | replace('May', 'maj')
-                  | replace('June', 'juni')
-                  | replace('July', 'juli')
-                  | replace('August', 'augusti')
-                  | replace('September', 'september')
-                  | replace('October', 'oktober')
-                  | replace('November', 'november')
-                  | replace('December', 'december') 
-              }} - {{ race.raceName
-                  | replace('Bahrain', 'Bahrain')
-                  | replace('Saudi Arabian', 'Saudiarabiens')
-                  | replace('Australian', 'Australiens')
-                  | replace('Azerbaijan', 'Azerbaijans')
-                  | replace('Miami', 'Miamis')
-                  | replace('Monaco', 'Monacos')
-                  | replace('Spanish', 'Spaniens')
-                  | replace('Canadian', 'Kanadas')
-                  | replace('Austrian', 'Österrikes')
-                  | replace('British', 'Storbritanniens')
-                  | replace('Hungarian', 'Ungerns')
-                  | replace('Belgian', 'Belgiens')
-                  | replace('Dutch', 'Nederländernas')
-                  | replace('Italian', 'Italiens')
-                  | replace('Singapore', 'Singapores')
-                  | replace('Japanese', 'Japans')
-                  | replace('Qatar', 'Qatars')
-                  | replace('United States', 'USA:s')
-                  | replace('Mexico City', 'Mexikos')
-                  | replace('São Paulo', 'Brasiliens')
-                  | replace('Las Vegas', 'Las Vegas')
-                  | replace('Abu Dhabi', 'Abu Dhabis')
-                  | replace('Grand Prix', 'GP')
-              }}
-            {% else %}
-              Inget mer race planerat
+        next_race_quali_and_time: >
+          {% set quali = state_attr('sensor.f1_next_race', 'qualifying_start') %}
+          {% if quali %}
+            {% set quali_dt = as_local(as_datetime(quali)) %}
+            Quali {{ quali_dt.strftime('%A at %H:%M')
+            }}
+          {% endif %}
+
+        next_race_circuit: >
+          {{ state_attr('sensor.f1_next_race', 'circuit_name') }}
+
+        next_race_location: >
+          {{ state_attr('sensor.f1_next_race', 'circuit_locality') }}, {{
+            state_attr('sensor.f1_next_race', 'circuit_country')
+          }}
+
+        race_schedule_plus1: >
+          {% set races = state_attr('sensor.f1_current_season', 'races') %}
+          {% set next_index = namespace(index = none) %}
+
+          {# Find index for the next race #}
+          {% for i in range(races | length) %}
+            {% set race_dt = as_datetime(races[i].date ~ 'T' ~ races[i].time) %}
+            {% if race_dt > now() %}
+              {% set next_index.index = i %}
+              {% break %}
             {% endif %}
+          {% endfor %}
 
-          race_schedule_plus2: >
-            {% set races = state_attr('sensor.f1_current_season', 'races') %}
-            {% set next_index = namespace(index = none) %}
+          {# Show the race after the next one, if there is one #}
+          {% if next_index.index is not none and (next_index.index + 1) < (races | length) %}
+            {% set race = races[next_index.index + 1] %}
+            {% set race_dt = as_local(as_datetime(race.date ~ 'T' ~ race.time)) %}
+            {{ race_dt.strftime('%d %B')
+            }} - {{ race.raceName
+                | replace('Grand Prix', 'GP')
+            }}
+          {% else %}
+            No more races planned
+          {% endif %}
 
-            {# Hitta index för nästa race #}
-            {% for i in range(races | length) %}
-              {% set race_dt = as_datetime(races[i].date ~ 'T' ~ races[i].time) %}
-              {% if race_dt > now() %}
-                {% set next_index.index = i %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
+        race_schedule_plus2: >
+          {% set races = state_attr('sensor.f1_current_season', 'races') %}
+          {% set next_index = namespace(index = none) %}
 
-            {# Visa racet efter nästa, om det finns #}
-            {% if next_index.index is not none and (next_index.index + 2) < (races | length) %}
-              {% set race = races[next_index.index + 2] %}
-              {% set race_dt = as_local(as_datetime(race.date ~ 'T' ~ race.time)) %}
-              {{ race_dt.strftime('%d %B') 
-                  | replace('January', 'januari')
-                  | replace('February', 'februari')
-                  | replace('March', 'mars')
-                  | replace('April', 'april')
-                  | replace('May', 'maj')
-                  | replace('June', 'juni')
-                  | replace('July', 'juli')
-                  | replace('August', 'augusti')
-                  | replace('September', 'september')
-                  | replace('October', 'oktober')
-                  | replace('November', 'november')
-                  | replace('December', 'december') 
-              }} - {{ race.raceName
-                  | replace('Bahrain', 'Bahrain')
-                  | replace('Saudi Arabian', 'Saudiarabiens')
-                  | replace('Australian', 'Australiens')
-                  | replace('Azerbaijan', 'Azerbaijans')
-                  | replace('Miami', 'Miamis')
-                  | replace('Monaco', 'Monacos')
-                  | replace('Spanish', 'Spaniens')
-                  | replace('Canadian', 'Kanadas')
-                  | replace('Austrian', 'Österrikes')
-                  | replace('British', 'Storbritanniens')
-                  | replace('Hungarian', 'Ungerns')
-                  | replace('Belgian', 'Belgiens')
-                  | replace('Dutch', 'Nederländernas')
-                  | replace('Italian', 'Italiens')
-                  | replace('Singapore', 'Singapores')
-                  | replace('Japanese', 'Japans')
-                  | replace('Qatar', 'Qatars')
-                  | replace('United States', 'USA:s')
-                  | replace('Mexico City', 'Mexikos')
-                  | replace('São Paulo', 'Brasiliens')
-                  | replace('Las Vegas', 'Las Vegas')
-                  | replace('Abu Dhabi', 'Abu Dhabis')
-                  | replace('Grand Prix', 'GP')
-              }}
-            {% else %}
-              Inget mer race planerat
+          {# Find index for next race #}
+          {% for i in range(races | length) %}
+            {% set race_dt = as_datetime(races[i].date ~ 'T' ~ races[i].time) %}
+            {% if race_dt > now() %}
+              {% set next_index.index = i %}
+              {% break %}
             {% endif %}
+          {% endfor %}
 
-          race_schedule_plus3: >
-            {% set races = state_attr('sensor.f1_current_season', 'races') %}
-            {% set next_index = namespace(index = none) %}
+          {# Find index for next race #}
+          {% if next_index.index is not none and (next_index.index + 2) < (races | length) %}
+            {% set race = races[next_index.index + 2] %}
+            {% set race_dt = as_local(as_datetime(race.date ~ 'T' ~ race.time)) %}
+            {{ race_dt.strftime('%d %B')
+            }} - {{ race.raceName
+                | replace('Grand Prix', 'GP')
+            }}
+          {% else %}
+            No more races planned
+          {% endif %}
 
-            {# Hitta index för nästa race #}
-            {% for i in range(races | length) %}
-              {% set race_dt = as_datetime(races[i].date ~ 'T' ~ races[i].time) %}
-              {% if race_dt > now() %}
-                {% set next_index.index = i %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
+        race_schedule_plus3: >
+          {% set races = state_attr('sensor.f1_current_season', 'races') %}
+          {% set next_index = namespace(index = none) %}
 
-            {# Visa racet efter nästa, om det finns #}
-            {% if next_index.index is not none and (next_index.index + 3) < (races | length) %}
-              {% set race = races[next_index.index + 3] %}
-              {% set race_dt = as_local(as_datetime(race.date ~ 'T' ~ race.time)) %}
-              {{ race_dt.strftime('%d %B') 
-                  | replace('January', 'januari')
-                  | replace('February', 'februari')
-                  | replace('March', 'mars')
-                  | replace('April', 'april')
-                  | replace('May', 'maj')
-                  | replace('June', 'juni')
-                  | replace('July', 'juli')
-                  | replace('August', 'augusti')
-                  | replace('September', 'september')
-                  | replace('October', 'oktober')
-                  | replace('November', 'november')
-                  | replace('December', 'december') 
-              }} - {{ race.raceName
-                  | replace('Bahrain', 'Bahrain')
-                  | replace('Saudi Arabian', 'Saudiarabiens')
-                  | replace('Australian', 'Australiens')
-                  | replace('Azerbaijan', 'Azerbaijans')
-                  | replace('Miami', 'Miamis')
-                  | replace('Monaco', 'Monacos')
-                  | replace('Spanish', 'Spaniens')
-                  | replace('Canadian', 'Kanadas')
-                  | replace('Austrian', 'Österrikes')
-                  | replace('British', 'Storbritanniens')
-                  | replace('Hungarian', 'Ungerns')
-                  | replace('Belgian', 'Belgiens')
-                  | replace('Dutch', 'Nederländernas')
-                  | replace('Italian', 'Italiens')
-                  | replace('Singapore', 'Singapores')
-                  | replace('Japanese', 'Japans')
-                  | replace('Qatar', 'Qatars')
-                  | replace('United States', 'USA:s')
-                  | replace('Mexico City', 'Mexikos')
-                  | replace('São Paulo', 'Brasiliens')
-                  | replace('Las Vegas', 'Las Vegas')
-                  | replace('Abu Dhabi', 'Abu Dhabis')
-                  | replace('Grand Prix', 'GP')
-              }}
-            {% else %}
-              Inget mer race planerat
+          {# Find index for the next race#}
+          {% for i in range(races | length) %}
+            {% set race_dt = as_datetime(races[i].date ~ 'T' ~ races[i].time) %}
+            {% if race_dt > now() %}
+              {% set next_index.index = i %}
+              {% break %}
             {% endif %}
+          {% endfor %}
+
+          {# Show the race after the next one, if there is one #}
+          {% if next_index.index is not none and (next_index.index + 3) < (races | length) %}
+            {% set race = races[next_index.index + 3] %}
+            {% set race_dt = as_local(as_datetime(race.date ~ 'T' ~ race.time)) %}
+            {{ race_dt.strftime('%d %B') 
+            }} - {{ race.raceName
+                | replace('Grand Prix', 'GP')
+            }}
+          {% else %}
+            No more races planned
+          {% endif %}
