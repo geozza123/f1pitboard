@@ -1,35 +1,16 @@
 # E-ink displays power by ESPhome and Home Assistant
 
-<a href="https://buymeacoffee.com/niklasv" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 
+This is my take on the [F1pitboard](https://github.com/Nicxe/esphome).
 
-
-
-This is my take on the [Weatherman Dashboard for ESPHome](https://github.com/Madelena/esphome-weatherman-dashboard).
-
-I have two dahsboards at the moment
-
-* **Weatherman** - This One located at the front door of our apartment with the purpose to show us information that is of interest when we leave the apartment. Some information only shows when it is of interest, for example, a reminder to pack fruit to school for our son.
-
-* **F1pitboard** - Because I’m a big Formula 1 fan, I keep a dashboard on my desk that shows when the next race is and the schedule for the practice sessions and qualifying.
-
-
-
-## Weatherman
-<img src="https://github.com/Nicxe/esphome/assets/27124316/211c4542-eca8-4a76-987b-7a9b838e2193" width="500">
-<img src="https://github.com/Nicxe/esphome/assets/27124316/88188e7b-4464-457b-ae86-6bd833450265" width="500">
-
-<br>All icons and information show, this is only when the dashboard is in service mode
-<img src="https://github.com/Nicxe/esphome/assets/27124316/baa2c249-bf0b-49a6-9b31-7161c171f8b9" width="500">
-
-
+I have adapted further to include F1 Fonts, and an additional Race Control page which will list various Race Control messages
 
 
 ## F1 Pit board
 This dashboard fetches information about the upcoming F1 race using the [F1 Sensor](https://github.com/Nicxe/f1_sensor) integration.
 
-<img width="500" alt="F1_pitwall" src="https://github.com/user-attachments/assets/f962283c-a4f7-4903-898f-fd799f439ed6" />
+(image to be added)
 
 
 
