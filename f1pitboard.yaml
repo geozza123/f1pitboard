@@ -423,6 +423,13 @@ display:
             std::string msg_upper = msg;
             for(auto & c: msg_upper) c = toupper(c);
 
+            // --- BLUE FLAG FILTER START ---
+            if (msg_upper.find("BLUE FLAG") != std::string::npos) {
+                pos = end + 1; // Move the pointer forward
+                continue;      // Skip this message and go to the next iteration
+            }
+            // --- BLUE FLAG FILTER END ---
+
             const char* glyph = "";
             if (msg_upper.find("PENALTY") != std::string::npos) glyph = "\U000F029B";
             else if (msg_upper.find("INVESTIGATION") != std::string::npos) glyph = "\U000F0349";
